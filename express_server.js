@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 const PORT = 8080;
@@ -58,7 +59,7 @@ function emailExists(email, userDatabase) {
 
 function checkPassword(email, password, userDatabase) {
   for (const key in userDatabase) {
-    if (userDatabase[key].email === email && userDatabase[key].password === password) {
+    if (email === userDatabase[key].email && bcrypt.compareSync(password, userDatabase[key].password)) {
       return true;
     }
   }
@@ -212,10 +213,11 @@ app.post("/register", (req, res) => {
     res.send('This email is already registered');
   } else {
     const id = generateRandomString();
+    const hashedPassword = bcrypt.hashSync(password, 10);
     users[id] = {
       id, 
       email, 
-      password, 
+      password: hashedPassword, 
     }
     res.cookie('user_id', id);
     res.redirect('/urls');
