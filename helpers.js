@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 
+// Use email and user database to get the user's id, return undefined if cannot find a user with this email
 const getUserIdByEmail = function (email, userDatabase) {
   for (const key in userDatabase) {
     if (userDatabase[key].email === email) {
@@ -9,6 +10,7 @@ const getUserIdByEmail = function (email, userDatabase) {
   return undefined;
 }
 
+// Generate a random alphanumeric string length 6
 const generateRandomString = function () {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let randomString = '';
@@ -19,6 +21,7 @@ const generateRandomString = function () {
   return randomString;
 }
 
+// Check if user email and password are matching
 const checkPassword = function (email, password, userDatabase) {
   for (const key in userDatabase) {
     if (email === userDatabase[key].email && bcrypt.compareSync(password, userDatabase[key].password)) {
@@ -28,6 +31,7 @@ const checkPassword = function (email, password, userDatabase) {
   return false;
 }
 
+// Get all urls belong to the user with this user id
 const getUrls = function (user_id, urlDatabase) {
   let outputObj = {};
   for (const key in urlDatabase) {
