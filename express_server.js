@@ -14,33 +14,9 @@ app.use(cookieSession({
   keys: ['key1', 'key2']
 }))
 
-const urlDatabase = {
-  b6UTxQ: {
-      longURL: "https://www.tsn.ca",
-      userID: "aJ48lW"
-  },
-  i3BoGr: {
-      longURL: "https://www.google.ca",
-      userID: "aJ48lW"
-  }, 
-  k5aDs4: {
-      longURL: "https://www.lighthouselab.ca",
-      userID: "ipH92N"
-  },
-};
+const urlDatabase = {};
 
-const users = { 
-  "aJ48lW": {
-    id: "aJ48lW", 
-    email: "user@example.com", 
-    password: "123"
-  },
- "ipH92N": {
-    id: "ipH92N", 
-    email: "user2@example.com", 
-    password: "234"
-  }
-}
+const users = {};
 
 app.get("/", (req, res) => {
   res.send("Hello!");
