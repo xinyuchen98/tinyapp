@@ -6,7 +6,7 @@ const getUserIdByEmail = function (email, userDatabase) {
       return key;
     }
   }
-  return false;
+  return undefined;
 }
 
 const generateRandomString = function () {
