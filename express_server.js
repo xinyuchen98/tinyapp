@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session')
 const bcrypt = require('bcryptjs');
+const { getUserIdByEmail, generateRandomString, checkPassword, getUrls } = require("./helpers");
 
 const app = express();
 const PORT = 8080;
@@ -39,53 +40,6 @@ const users = {
     email: "user2@example.com", 
     password: "234"
   }
-}
-
-function generateRandomString() {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let randomString = '';
-  const length = 6;
-  for (let i = 0; i < length; i++) {
-    randomString += characters[Math.floor(Math.random() * characters.length)];
-  }
-  return randomString;
-}
-
-function emailExists(email, userDatabase) {
-  for (const key in userDatabase) {
-    if (userDatabase[key].email === email) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function checkPassword(email, password, userDatabase) {
-  for (const key in userDatabase) {
-    if (email === userDatabase[key].email && bcrypt.compareSync(password, userDatabase[key].password)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function getUserId(email, userDatabase) {
-  for (const key in userDatabase) {
-    if (userDatabase[key].email === email) {
-      return key;
-    }
-  }
-  return false;
-}
-
-function getUrls(user_id, urlDatabase) {
-  let outputObj = {};
-  for (const key in urlDatabase) {
-    if (urlDatabase[key].userID === user_id) {
-      outputObj[key] = urlDatabase[key].longURL;
-    }
-  }
-  return outputObj;
 }
 
 app.get("/", (req, res) => {
@@ -189,14 +143,14 @@ app.post("/urls", (req, res) => {
 
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-  if (!emailExists(email, users)) {
+  if (!getUserIdByEmail(email, users)) {
     res.status(403);
     res.send('Cannot find a user with the email address');
   } else if (!checkPassword(email, password, users)) {
     res.status(403);
     res.send('Password is incorrect');
   } else {
-    req.session.user_id = getUserId(email, users);
+    req.session.user_id = getUserIdByEmail(email, users);
     res.redirect('/urls');
   }
 });
@@ -211,7 +165,7 @@ app.post("/register", (req, res) => {
   if (email === '' || password === '') {
     res.status(400);
     res.send('Email or password is empty');
-  } else if (emailExists(email, users)) {
+  } else if (getUserIdByEmail(email, users)) {
     res.status(400);
     res.send('This email is already registered');
   } else {
