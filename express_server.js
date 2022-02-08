@@ -26,14 +26,6 @@ app.get("/", (req, res) => {
   }
 });
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
-
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-
 // List of urls page
 app.get("/urls", (req, res) => {
   const user = users[req.session.user_id];
@@ -156,7 +148,7 @@ app.post("/logout", (req, res) => {
 // Register action
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
-  if (email === '' || password === '') {
+  if (!email || !password) {
     res.status(400);
     res.send('Email or password is empty');
   // If the email alrady exists in database
